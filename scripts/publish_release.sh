@@ -41,15 +41,30 @@ git -C "$repo_dir" push origin "$tag"
 
 repo_slug="$(git -C "$repo_dir" remote get-url origin | sed -E 's#(git@github.com:|https://github.com/)##; s#\\.git$##')"
 
-if gh release view "$tag" --repo "$repo_slug" >/dev/null 2>&1; then
-  print "GitHub Release $tag 已存在。"
-else
-  gh api "repos/$repo_slug/releases" \
+release_ready=false
+for attempt in 1 2 3 4 5; do
+  if gh api "repos/$repo_slug/releases/tags/$tag" >/dev/null 2>&1; then
+    release_ready=true
+    break
+  fi
+
+  if gh api "repos/$repo_slug/releases" \
     -f tag_name="$tag" \
     -f name="治疗乔治腿伤 $tag" \
     -f body="自动发布版本 $tag。详细变化见 CHANGELOG.md。" \
-    >/dev/null
-  gh release upload "$tag" "$zip_file" --repo "$repo_slug"
+    >/dev/null 2>&1; then
+    release_ready=true
+    break
+  fi
+
+  sleep 2
+done
+
+if [[ "$release_ready" != true ]]; then
+  print -u2 "GitHub 尚未识别标签 $tag，Release 创建失败。"
+  exit 1
 fi
+
+gh release upload "$tag" "$zip_file" --repo "$repo_slug" --clobber
 
 print "发布完成：$tag"
