@@ -1,0 +1,18 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# Local research, previews, and extracted vanilla game assets
+GeorgeRecovery/_build/
+archive/
+
+# Local game/runtime files
+*.log
+.env
+.env.*
+
+# macOS and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
