@@ -39,11 +39,13 @@ fi
 git -C "$repo_dir" push origin main
 git -C "$repo_dir" push origin "$tag"
 
-if gh release view "$tag" --repo "$(git -C "$repo_dir" remote get-url origin)" >/dev/null 2>&1; then
+repo_slug="$(git -C "$repo_dir" remote get-url origin | sed -E 's#(git@github.com:|https://github.com/)##; s#\\.git$##')"
+
+if gh release view "$tag" --repo "$repo_slug" >/dev/null 2>&1; then
   print "GitHub Release $tag 已存在。"
 else
   gh release create "$tag" "$zip_file" \
-    --repo "$(git -C "$repo_dir" remote get-url origin)" \
+    --repo "$repo_slug" \
     --title "治疗乔治腿伤 $tag" \
     --generate-notes
 fi
