@@ -44,10 +44,12 @@ repo_slug="$(git -C "$repo_dir" remote get-url origin | sed -E 's#(git@github.co
 if gh release view "$tag" --repo "$repo_slug" >/dev/null 2>&1; then
   print "GitHub Release $tag 已存在。"
 else
-  gh release create "$tag" "$zip_file" \
-    --repo "$repo_slug" \
-    --title "治疗乔治腿伤 $tag" \
-    --generate-notes
+  gh api "repos/$repo_slug/releases" \
+    -f tag_name="$tag" \
+    -f name="治疗乔治腿伤 $tag" \
+    -f body="自动发布版本 $tag。详细变化见 CHANGELOG.md。" \
+    >/dev/null
+  gh release upload "$tag" "$zip_file" --repo "$repo_slug"
 fi
 
 print "发布完成：$tag"
