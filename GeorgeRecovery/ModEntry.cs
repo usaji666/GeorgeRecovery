@@ -100,7 +100,7 @@ public sealed class ModEntry : Mod
             {
                 IDictionary<string, string> schedules = asset.AsDictionary<string, string>().Data;
                 schedules[RecoveryHomeSchedule] =
-                    "630 JoshHouse 16 22 0/1210 JoshHouse 5 21 3/1330 JoshHouse 3 19 2/1500 JoshHouse 17 22 3/1630 JoshHouse 17 17 0/1700 JoshHouse 16 22 0/2000 JoshHouse 3 5 0 george_sleep";
+                    "630 JoshHouse 16 22 0/1210 JoshHouse 5 21 3/1330 JoshHouse 5 19 2/1500 JoshHouse 17 22 3/1630 JoshHouse 17 17 0/1700 JoshHouse 16 22 0/2000 JoshHouse 3 5 0 george_sleep";
                 schedules[RecoverySpringSchedule] =
                     "630 JoshHouse 16 22 0/1210 JoshHouse 5 21 3/1300 Town 38 78 3/1600 JoshHouse 17 17 0/1700 JoshHouse 16 22 0/2000 JoshHouse 3 5 0 george_sleep";
                 schedules[RecoverySummerSchedule] =
@@ -108,9 +108,9 @@ public sealed class ModEntry : Mod
                 schedules[RecoveryCommunityCenterSchedule] =
                     "630 JoshHouse 16 22 0/1210 CommunityCenter 20 25 3/1600 JoshHouse 17 17 0/1700 JoshHouse 16 22 0/2000 JoshHouse 3 5 0 george_sleep";
                 schedules[RecoveryClinicSchedule] =
-                    "630 JoshHouse 16 22 0/1030 Hospital 10 15 0/1330 Hospital 4 6 1/1600 JoshHouse 17 17 0/1700 JoshHouse 16 22 0/2000 JoshHouse 3 5 0 george_sleep";
+                    "630 JoshHouse 16 22 0/1030 Hospital 12 15 0/1330 Hospital 6 6 1/1600 JoshHouse 17 17 0/1700 JoshHouse 16 22 0/2000 JoshHouse 3 5 0 george_sleep";
                 schedules[RecoveryBeachSchedule] =
-                    "630 JoshHouse 16 22 0/1210 JoshHouse 5 21 3/1620 Beach 11 39 2/1700 Beach 11 39 2/2340 JoshHouse 3 5 0 george_sleep";
+                    "630 JoshHouse 16 22 0/1210 JoshHouse 5 21 3/1620 Beach 10 39 2/1700 Beach 10 39 2/2340 JoshHouse 3 5 0 george_sleep";
             });
             return;
         }
