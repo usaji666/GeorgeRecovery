@@ -1,7 +1,7 @@
 {
   "Name": "治疗乔治腿伤",
   "Author": "vicky",
-  "Version": "0.3.14",
+  "Version": "0.3.15",
   "Description": "帮助哈维收集治疗材料，推进乔治的康复故事。",
   "UniqueID": "vicky.GeorgeRecovery",
   "EntryDll": "GeorgeRecovery.dll",

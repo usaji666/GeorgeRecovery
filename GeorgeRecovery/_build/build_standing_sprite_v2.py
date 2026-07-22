@@ -7,7 +7,7 @@ PROJECT = Path("/Users/wanghan/Documents/治疗乔治腿伤Mod/GeorgeRecovery")
 GEORGE = PROJECT / "_build/original-assets/sprites/George-1.png"
 LEWIS = PROJECT / "_build/original-assets/sprites/Lewis-1.png"
 OUTPUT = PROJECT / "assets/George_Standing.png"
-PREVIEW = PROJECT / "_build/imagegen/George_Standing-v14-preview-8x.png"
+PREVIEW = PROJECT / "_build/imagegen/George_Standing-v15-preview-8x.png"
 
 # Lewis uses the game's native slim body and standard four-direction walking
 # cadence. Map his palette to George's existing green/blue/brown colors.
@@ -125,7 +125,7 @@ def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
 
     # Coordinates are local to the extracted head. The contour expands through
     # the middle of the skull, then steps inward under the ear to form an oval.
-    left_contour = (5, 4, 3, 2, 2, 3, 3, 3, 3, 4, 5)
+    left_contour = (5, 4, 3, 2, 2, 3, 4, 4, 4, 5, 6)
     if direction not in (1, 3):
         return
 
@@ -187,51 +187,6 @@ def lighten_side_cheek(image: Image.Image, direction: int) -> None:
             if image.getpixel((pixel_x, pixel_y)) == dark_brown:
                 color = skin_mid if pixel_x == front_edge else skin_light
                 image.putpixel((pixel_x, pixel_y), color)
-
-
-def soften_side_ear(image: Image.Image, direction: int) -> None:
-    """Replace every non-skin block around the ear while keeping the outline."""
-    skin_light = (249, 187, 151, 255)
-    non_skin_dark = {
-        (33, 33, 33, 255),
-        (71, 71, 71, 255),
-        (92, 92, 92, 255),
-        (100, 100, 100, 255),
-        (119, 119, 119, 255),
-        (156, 156, 156, 255),
-        (102, 53, 55, 255),
-        (154, 97, 74, 255),
-    }
-    left_contour = (5, 4, 3, 2, 2, 3, 3, 3, 3, 4, 5)
-    if direction not in (1, 3):
-        return
-
-    # Rows 4-8 surround and sit directly below the ear. Replace every dark or
-    # gray block inside the head, but deliberately exclude the outermost pixel.
-    for pixel_y in range(4, min(9, image.height)):
-        left_edge = left_contour[pixel_y]
-        rear_edge = left_edge if direction == 1 else 15 - left_edge
-        inner_pixels = range(rear_edge + 1, 8) if direction == 1 else range(8, rear_edge)
-        for pixel_x in inner_pixels:
-            if image.getpixel((pixel_x, pixel_y)) in non_skin_dark:
-                image.putpixel((pixel_x, pixel_y), skin_light)
-
-
-def add_front_face_outline(image: Image.Image, direction: int) -> None:
-    """Restore the five-pixel black outline along the lower front side face."""
-    outline_black = (33, 33, 33, 255)
-    if direction not in (1, 3):
-        return
-
-    for pixel_y in range(6, min(11, image.height)):
-        occupied = [
-            pixel_x
-            for pixel_x in range(image.width)
-            if image.getpixel((pixel_x, pixel_y))[3] > 0
-        ]
-        if occupied:
-            front_edge = max(occupied) if direction == 1 else min(occupied)
-            image.putpixel((front_edge, pixel_y), outline_black)
 
 
 def soften_back_hair(image: Image.Image) -> None:
@@ -312,8 +267,6 @@ for direction in range(4):
         round_side_back(head, direction)
         round_and_clean_side_rear(head, direction)
         lighten_side_cheek(head, direction)
-        soften_side_ear(head, direction)
-        add_front_face_outline(head, direction)
         if direction == 2:
             soften_back_hair(head)
         frame.alpha_composite(head, (0, 5))
