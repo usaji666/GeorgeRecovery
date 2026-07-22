@@ -7,7 +7,7 @@ PROJECT = Path("/Users/wanghan/Documents/治疗乔治腿伤Mod/GeorgeRecovery")
 GEORGE = PROJECT / "_build/original-assets/sprites/George-1.png"
 LEWIS = PROJECT / "_build/original-assets/sprites/Lewis-1.png"
 OUTPUT = PROJECT / "assets/George_Standing.png"
-PREVIEW = PROJECT / "_build/imagegen/George_Standing-v10-preview-8x.png"
+PREVIEW = PROJECT / "_build/imagegen/George_Standing-v11-preview-8x.png"
 
 # Lewis uses the game's native slim body and standard four-direction walking
 # cadence. Map his palette to George's existing green/blue/brown colors.
@@ -123,7 +123,7 @@ def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
 
     # Coordinates are local to the extracted head. The contour expands through
     # the middle of the skull, then steps inward under the ear to form an oval.
-    left_contour = (5, 4, 3, 3, 3, 3, 4, 4, 4, 5, 6)
+    left_contour = (5, 4, 3, 2, 2, 3, 4, 4, 4, 5, 6)
     if direction not in (1, 3):
         return
 
@@ -151,9 +151,16 @@ def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
                 if image.getpixel((pixel_x, pixel_y)) in dark_colors:
                     image.putpixel((pixel_x, pixel_y), gray_fill)
 
+    # These are the actual three diagonal blocks visible below the ear. They
+    # come from George's dark-brown wheelchair sprite, not from the gray outer
+    # contour, so handle their exact mirrored coordinates explicitly.
+    under_ear_pixels = ((5, 7), (6, 8), (7, 9)) if direction == 1 else ((10, 7), (9, 8), (8, 9))
+    for pixel_x, pixel_y in under_ear_pixels:
+        image.putpixel((pixel_x, pixel_y), skin_mid)
+
 
 def soften_back_hair(image: Image.Image) -> None:
-    """Keep the back head ten pixels wide while retaining soft hair shading."""
+    """Widen the middle of the rear head so both sides form a clear curve."""
     transparent = (0, 0, 0, 0)
     gray_dark = (71, 71, 71, 255)
     gray_mid = (119, 119, 119, 255)
@@ -165,15 +172,16 @@ def soften_back_hair(image: Image.Image) -> None:
     image.putpixel((5, 0), hair_brown)
     image.putpixel((10, 0), hair_brown)
 
-    # The old rear head reached twelve pixels at its widest point. Trim one
-    # pixel from each side, then keep the lower hair at the same ten-pixel width.
+    # Keep the crown at six/eight/ten pixels, then widen the middle to twelve.
+    # The lower skin later narrows through ten/eight/six pixels, producing a
+    # visibly rounded left and right silhouette instead of a vertical block.
     for pixel_y in range(3, 8):
         for pixel_x in range(image.width):
-            if pixel_y >= 5 or pixel_x < 3 or pixel_x > 12:
+            if pixel_y >= 5 or pixel_x < 2 or pixel_x > 13:
                 image.putpixel((pixel_x, pixel_y), transparent)
 
     for pixel_y in (5, 6, 7):
-        left, right = 3, 12
+        left, right = 2, 13
         for pixel_x in range(left, right + 1):
             distance_to_edge = min(pixel_x - left, right - pixel_x)
             if distance_to_edge == 0:
