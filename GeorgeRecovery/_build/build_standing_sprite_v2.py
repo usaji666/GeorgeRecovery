@@ -7,7 +7,7 @@ PROJECT = Path("/Users/wanghan/Documents/治疗乔治腿伤Mod/GeorgeRecovery")
 GEORGE = PROJECT / "_build/original-assets/sprites/George-1.png"
 LEWIS = PROJECT / "_build/original-assets/sprites/Lewis-1.png"
 OUTPUT = PROJECT / "assets/George_Standing.png"
-PREVIEW = PROJECT / "_build/imagegen/George_Standing-v9-preview-8x.png"
+PREVIEW = PROJECT / "_build/imagegen/George_Standing-v10-preview-8x.png"
 
 # Lewis uses the game's native slim body and standard four-direction walking
 # cadence. Map his palette to George's existing green/blue/brown colors.
@@ -109,52 +109,47 @@ def round_side_back(image: Image.Image, direction: int) -> None:
             image.putpixel((pixel_x, pixel_y), color)
 
 
-def shrink_and_clean_side_rear(image: Image.Image, direction: int) -> None:
-    """Shrink the side head by one pixel and remove black from its rear half."""
+def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
+    """Round the side silhouette and remove dark pixels below George's ear."""
     transparent = (0, 0, 0, 0)
     gray_dark = (71, 71, 71, 255)
     gray_fill = (119, 119, 119, 255)
-    skin_dark = (154, 97, 74, 255)
     skin_mid = (207, 141, 112, 255)
-    dark_colors = {(33, 33, 33, 255), (71, 71, 71, 255)}
+    dark_colors = {
+        (33, 33, 33, 255),
+        (71, 71, 71, 255),
+        (154, 97, 74, 255),
+    }
 
-    for pixel_y in range(1, min(11, image.height)):
-        occupied = [
-            pixel_x
-            for pixel_x in range(image.width)
-            if image.getpixel((pixel_x, pixel_y))[3] > 0
-        ]
-        if not occupied:
-            continue
+    # Coordinates are local to the extracted head. The contour expands through
+    # the middle of the skull, then steps inward under the ear to form an oval.
+    left_contour = (5, 4, 3, 3, 3, 3, 4, 4, 4, 5, 6)
+    if direction not in (1, 3):
+        return
 
-        if direction == 1:  # facing right: rear is on the left
-            outside_x = min(occupied)
-            image.putpixel((outside_x, pixel_y), transparent)
-            rear_pixels = range(0, 8)
-        elif direction == 3:  # facing left: rear is on the right
-            outside_x = max(occupied)
-            image.putpixel((outside_x, pixel_y), transparent)
-            rear_pixels = range(8, image.width)
+    for pixel_y, left_edge in enumerate(left_contour[: image.height]):
+        rear_edge = left_edge if direction == 1 else 15 - left_edge
+
+        # Remove only pixels outside the target curve, then add the new edge.
+        outside_pixels = range(0, rear_edge) if direction == 1 else range(rear_edge + 1, image.width)
+        for pixel_x in outside_pixels:
+            image.putpixel((pixel_x, pixel_y), transparent)
+
+        edge_color = gray_dark if pixel_y <= 5 else skin_mid
+        image.putpixel((rear_edge, pixel_y), edge_color)
+
+        # Below the ear, replace every black/dark-gray/dark-skin pixel on the
+        # rear half. This includes the three diagonal blocks at the bottom.
+        if pixel_y >= 6:
+            rear_pixels = range(rear_edge, 8) if direction == 1 else range(8, rear_edge + 1)
+            for pixel_x in rear_pixels:
+                if image.getpixel((pixel_x, pixel_y)) in dark_colors:
+                    image.putpixel((pixel_x, pixel_y), skin_mid)
         else:
-            return
-
-        # Clear every pure-black/dark stripe inside the rear half. The new edge
-        # uses gray-hair or skin shadow, so it remains readable without looking
-        # like a black line embedded inside George's head.
-        fill = gray_fill if pixel_y <= 5 else skin_mid
-        for pixel_x in rear_pixels:
-            if image.getpixel((pixel_x, pixel_y)) in dark_colors:
-                image.putpixel((pixel_x, pixel_y), fill)
-
-        occupied = [
-            pixel_x
-            for pixel_x in range(image.width)
-            if image.getpixel((pixel_x, pixel_y))[3] > 0
-        ]
-        if occupied:
-            rear_edge_x = min(occupied) if direction == 1 else max(occupied)
-            edge_color = gray_dark if pixel_y <= 5 else skin_dark
-            image.putpixel((rear_edge_x, pixel_y), edge_color)
+            rear_pixels = range(rear_edge + 1, 8) if direction == 1 else range(8, rear_edge)
+            for pixel_x in rear_pixels:
+                if image.getpixel((pixel_x, pixel_y)) in dark_colors:
+                    image.putpixel((pixel_x, pixel_y), gray_fill)
 
 
 def soften_back_hair(image: Image.Image) -> None:
@@ -163,6 +158,12 @@ def soften_back_hair(image: Image.Image) -> None:
     gray_dark = (71, 71, 71, 255)
     gray_mid = (119, 119, 119, 255)
     gray_light = (156, 156, 156, 255)
+    hair_brown = (102, 53, 55, 255)
+
+    # Widen the top cap from four to six pixels, followed by the original
+    # eight- and ten-pixel rows, so the rear head begins with a round crown.
+    image.putpixel((5, 0), hair_brown)
+    image.putpixel((10, 0), hair_brown)
 
     # The old rear head reached twelve pixels at its widest point. Trim one
     # pixel from each side, then keep the lower hair at the same ten-pixel width.
@@ -187,13 +188,12 @@ def soften_back_hair(image: Image.Image) -> None:
 
 
 def make_back_skin() -> Image.Image:
-    """Match the upper width, with only a one-pixel rounded bottom corner."""
+    """Round the lower rear head from ten to eight to six pixels."""
     skin_dark = (154, 97, 74, 255)
     skin_mid = (207, 141, 112, 255)
     skin_light = (249, 187, 151, 255)
     image = Image.new("RGBA", (16, 3), (0, 0, 0, 0))
-    for pixel_y in range(3):
-        left, right = (4, 11) if pixel_y == 2 else (3, 12)
+    for pixel_y, (left, right) in enumerate(((3, 12), (4, 11), (5, 10))):
         for pixel_x in range(left, right + 1):
             distance_to_edge = min(pixel_x - left, right - pixel_x)
             color = skin_dark if distance_to_edge == 0 else skin_mid if distance_to_edge == 1 else skin_light
@@ -227,7 +227,7 @@ for direction in range(4):
                     head.putpixel((head_x, head_y), (0, 0, 0, 0))
         head = keep_largest_component(head)
         round_side_back(head, direction)
-        shrink_and_clean_side_rear(head, direction)
+        round_and_clean_side_rear(head, direction)
         if direction == 2:
             soften_back_hair(head)
         frame.alpha_composite(head, (0, 5))
