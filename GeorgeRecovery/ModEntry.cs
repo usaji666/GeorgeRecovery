@@ -138,8 +138,13 @@ public sealed class ModEntry : Mod
         this.refrigeratorTile = null;
         this.taskChestMenuOpen = false;
         this.SyncStageFromMailFlags();
+        this.RestoreCompletionFlagFromSaveData();
         this.lastRecoveryComplete = IsRecoveryComplete();
         this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
+        this.Monitor.Log(
+            $"读取任务状态：{this.data.Stage}；完成标记：{Game1.player.mailReceived.Contains(CompletedFlag)}；当前时间：{Game1.timeOfDay}。",
+            LogLevel.Debug
+        );
     }
 
     private void OnDayStarted(object? sender, DayStartedEventArgs e)
@@ -168,7 +173,7 @@ public sealed class ModEntry : Mod
         this.SyncStageFromMailFlags();
 
         bool recoveryComplete = IsRecoveryComplete();
-        if (recoveryComplete != this.lastRecoveryComplete)
+        if (recoveryComplete != this.lastRecoveryComplete && !Game1.eventUp)
         {
             this.lastRecoveryComplete = recoveryComplete;
             this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
@@ -182,9 +187,33 @@ public sealed class ModEntry : Mod
         this.UpdateGeorgeAppearance();
     }
 
-    private static bool IsRecoveryComplete()
+    private bool IsRecoveryComplete()
     {
-        return Context.IsWorldReady && Game1.player.mailReceived.Contains(CompletedFlag);
+        return Context.IsWorldReady
+            && (this.data.Stage == QuestStage.Completed
+                || Game1.player.mailReceived.Contains(CompletedFlag));
+    }
+
+    private void RestoreCompletionFlagFromSaveData()
+    {
+        if (this.data.Stage == QuestStage.Completed
+            && !Game1.player.mailReceived.Contains(CompletedFlag))
+        {
+            Game1.player.mailReceived.Add(CompletedFlag);
+            this.Monitor.Log("已从 Mod 任务数据恢复乔治康复完成标记。", LogLevel.Debug);
+        }
+    }
+
+    private void MarkRecoveryComplete()
+    {
+        this.data.Stage = QuestStage.Completed;
+        this.data.RabbitFootSubmitted = Math.Max(this.data.RabbitFootSubmitted, 1);
+        if (!Game1.player.mailReceived.Contains(CompletedFlag))
+            Game1.player.mailReceived.Add(CompletedFlag);
+
+        this.Helper.Data.WriteSaveData(SaveKey, this.data);
+        this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
+        this.Monitor.Log("乔治康复完成状态已立即写入。", LogLevel.Debug);
     }
 
     private void UpdateGeorgeAppearance()
@@ -349,6 +378,10 @@ public sealed class ModEntry : Mod
 
     private void StartFinaleScene(GameLocation location)
     {
+        // Mark completion before the event starts, so skipping or warping away
+        // can't prevent the 12:00—17:00 standing schedule from unlocking.
+        this.MarkRecoveryComplete();
+
         string script =
             "none/-1000 -1000/farmer 14 21 1 George 17 21 3/"
             + "skippable/viewport 16 21 true/pause 500/"
