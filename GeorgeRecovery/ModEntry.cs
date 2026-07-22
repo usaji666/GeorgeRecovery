@@ -15,6 +15,7 @@ public sealed class ModEntry : Mod
     private const string HarveyRoom = "HarveyRoom";
     private const string HarveyRefrigeratorAction = "HarveyRoom.12";
     private const string GeorgeDialogueAsset = "Characters/Dialogue/George";
+    private const string EvelynDialogueAsset = "Characters/Dialogue/Evelyn";
     private const string GeorgeScheduleAsset = "Characters/schedules/George";
     private const string StandingGeorgeAsset = "Characters/George_Standing";
     private const string RecoveryHomeSchedule = "vicky_recovery_home";
@@ -125,6 +126,19 @@ public sealed class ModEntry : Mod
                 dialogue["Wed8"] = "哈维说我的康复进展很不错。#$e#我已经能慢慢走上几步了，下次要让亚历克斯看看。$h";
                 dialogue["Tue10"] = "我每天都会按哈维教的方法练习双腿。#$e#慢慢来，总会一天比一天更好。$h";
             });
+            return;
+        }
+
+        if (e.NameWithoutLocale.IsEquivalentTo(EvelynDialogueAsset)
+            && Context.IsWorldReady
+            && IsRecoveryComplete())
+        {
+            e.Edit(asset =>
+            {
+                IDictionary<string, string> dialogue = asset.AsDictionary<string, string>().Data;
+                dialogue["Fri"] = "乔治最近每天都会起来活动活动。#$e#看着他一步一步走得更稳，我心里也踏实多了。$h";
+                dialogue["summer_Tue"] = "暖和的天气让乔治很有精神，他每天都认真做康复练习。#$e#我们认识六十年了，我看得出来，他现在比以前更有信心！$h";
+            });
         }
     }
 
@@ -140,7 +154,7 @@ public sealed class ModEntry : Mod
         this.SyncStageFromMailFlags();
         this.RestoreCompletionFlagFromSaveData();
         this.lastRecoveryComplete = IsRecoveryComplete();
-        this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
+        this.InvalidateRecoveryDialogue();
         this.Monitor.Log(
             $"读取任务状态：{this.data.Stage}；完成标记：{Game1.player.mailReceived.Contains(CompletedFlag)}；当前时间：{Game1.timeOfDay}。",
             LogLevel.Debug
@@ -151,7 +165,7 @@ public sealed class ModEntry : Mod
     {
         this.SyncStageFromMailFlags();
         this.lastRecoveryComplete = IsRecoveryComplete();
-        this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
+        this.InvalidateRecoveryDialogue();
 
         if (this.lastRecoveryComplete)
             this.ApplyRecoveryScheduleForToday();
@@ -176,7 +190,7 @@ public sealed class ModEntry : Mod
         if (recoveryComplete != this.lastRecoveryComplete && !Game1.eventUp)
         {
             this.lastRecoveryComplete = recoveryComplete;
-            this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
+            this.InvalidateRecoveryDialogue();
 
             if (recoveryComplete)
                 this.ApplyRecoveryScheduleForToday();
@@ -212,8 +226,14 @@ public sealed class ModEntry : Mod
             Game1.player.mailReceived.Add(CompletedFlag);
 
         this.Helper.Data.WriteSaveData(SaveKey, this.data);
-        this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
+        this.InvalidateRecoveryDialogue();
         this.Monitor.Log("乔治康复完成状态已立即写入。", LogLevel.Debug);
+    }
+
+    private void InvalidateRecoveryDialogue()
+    {
+        this.Helper.GameContent.InvalidateCache(GeorgeDialogueAsset);
+        this.Helper.GameContent.InvalidateCache(EvelynDialogueAsset);
     }
 
     private void UpdateGeorgeAppearance()
@@ -650,6 +670,7 @@ public sealed class ModEntry : Mod
             this.data.RabbitFootSubmitted = 1;
 
         this.Helper.Data.WriteSaveData(SaveKey, this.data);
+        this.InvalidateRecoveryDialogue();
         this.Monitor.Log($"测试阶段已设置为 {stage.Value}。", LogLevel.Info);
     }
 
