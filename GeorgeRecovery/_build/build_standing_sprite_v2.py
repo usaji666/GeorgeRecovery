@@ -7,7 +7,7 @@ PROJECT = Path("/Users/wanghan/Documents/治疗乔治腿伤Mod/GeorgeRecovery")
 GEORGE = PROJECT / "_build/original-assets/sprites/George-1.png"
 LEWIS = PROJECT / "_build/original-assets/sprites/Lewis-1.png"
 OUTPUT = PROJECT / "assets/George_Standing.png"
-PREVIEW = PROJECT / "_build/imagegen/George_Standing-v11-preview-8x.png"
+PREVIEW = PROJECT / "_build/imagegen/George_Standing-v12-preview-8x.png"
 
 # Lewis uses the game's native slim body and standard four-direction walking
 # cadence. Map his palette to George's existing green/blue/brown colors.
@@ -115,6 +115,7 @@ def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
     gray_dark = (71, 71, 71, 255)
     gray_fill = (119, 119, 119, 255)
     skin_mid = (207, 141, 112, 255)
+    skin_light = (249, 187, 151, 255)
     dark_colors = {
         (33, 33, 33, 255),
         (71, 71, 71, 255),
@@ -156,7 +157,7 @@ def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
     # contour, so handle their exact mirrored coordinates explicitly.
     under_ear_pixels = ((5, 7), (6, 8), (7, 9)) if direction == 1 else ((10, 7), (9, 8), (8, 9))
     for pixel_x, pixel_y in under_ear_pixels:
-        image.putpixel((pixel_x, pixel_y), skin_mid)
+        image.putpixel((pixel_x, pixel_y), skin_light)
 
 
 def soften_back_hair(image: Image.Image) -> None:
