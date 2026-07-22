@@ -7,7 +7,7 @@ PROJECT = Path("/Users/wanghan/Documents/治疗乔治腿伤Mod/GeorgeRecovery")
 GEORGE = PROJECT / "_build/original-assets/sprites/George-1.png"
 LEWIS = PROJECT / "_build/original-assets/sprites/Lewis-1.png"
 OUTPUT = PROJECT / "assets/George_Standing.png"
-PREVIEW = PROJECT / "_build/imagegen/George_Standing-v8-preview-8x.png"
+PREVIEW = PROJECT / "_build/imagegen/George_Standing-v9-preview-8x.png"
 
 # Lewis uses the game's native slim body and standard four-direction walking
 # cadence. Map his palette to George's existing green/blue/brown colors.
@@ -141,7 +141,7 @@ def shrink_and_clean_side_rear(image: Image.Image, direction: int) -> None:
         # Clear every pure-black/dark stripe inside the rear half. The new edge
         # uses gray-hair or skin shadow, so it remains readable without looking
         # like a black line embedded inside George's head.
-        fill = gray_fill if pixel_y <= 7 else skin_mid
+        fill = gray_fill if pixel_y <= 5 else skin_mid
         for pixel_x in rear_pixels:
             if image.getpixel((pixel_x, pixel_y)) in dark_colors:
                 image.putpixel((pixel_x, pixel_y), fill)
@@ -153,7 +153,7 @@ def shrink_and_clean_side_rear(image: Image.Image, direction: int) -> None:
         ]
         if occupied:
             rear_edge_x = min(occupied) if direction == 1 else max(occupied)
-            edge_color = gray_dark if pixel_y <= 7 else skin_dark
+            edge_color = gray_dark if pixel_y <= 5 else skin_dark
             image.putpixel((rear_edge_x, pixel_y), edge_color)
 
 
