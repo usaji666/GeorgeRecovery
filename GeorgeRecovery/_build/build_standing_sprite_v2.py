@@ -7,7 +7,7 @@ PROJECT = Path("/Users/wanghan/Documents/治疗乔治腿伤Mod/GeorgeRecovery")
 GEORGE = PROJECT / "_build/original-assets/sprites/George-1.png"
 LEWIS = PROJECT / "_build/original-assets/sprites/Lewis-1.png"
 OUTPUT = PROJECT / "assets/George_Standing.png"
-PREVIEW = PROJECT / "_build/imagegen/George_Standing-v15-preview-8x.png"
+PREVIEW = PROJECT / "_build/imagegen/George_Standing-v16-preview-8x.png"
 
 # Lewis uses the game's native slim body and standard four-direction walking
 # cadence. Map his palette to George's existing green/blue/brown colors.
@@ -114,7 +114,6 @@ def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
     transparent = (0, 0, 0, 0)
     gray_dark = (71, 71, 71, 255)
     gray_fill = (119, 119, 119, 255)
-    outline_black = (33, 33, 33, 255)
     skin_mid = (207, 141, 112, 255)
     skin_light = (249, 187, 151, 255)
     dark_colors = {
@@ -137,15 +136,13 @@ def round_and_clean_side_rear(image: Image.Image, direction: int) -> None:
         for pixel_x in outside_pixels:
             image.putpixel((pixel_x, pixel_y), transparent)
 
-        edge_color = gray_dark if pixel_y <= 5 else outline_black
+        edge_color = gray_dark if pixel_y <= 5 else skin_mid
         image.putpixel((rear_edge, pixel_y), edge_color)
 
         # Below the ear, replace every black/dark-gray/dark-skin pixel on the
         # rear half. This includes the three diagonal blocks at the bottom.
         if pixel_y >= 6:
-            # Do not include rear_edge itself: that is the requested black outer
-            # contour and must survive the cheek cleanup.
-            rear_pixels = range(rear_edge + 1, 8) if direction == 1 else range(8, rear_edge)
+            rear_pixels = range(rear_edge, 8) if direction == 1 else range(8, rear_edge + 1)
             for pixel_x in rear_pixels:
                 if image.getpixel((pixel_x, pixel_y)) in dark_colors:
                     image.putpixel((pixel_x, pixel_y), skin_mid)
