@@ -7,7 +7,7 @@ PROJECT = Path("/Users/wanghan/Documents/治疗乔治腿伤Mod/GeorgeRecovery")
 GEORGE = PROJECT / "_build/original-assets/sprites/George-1.png"
 LEWIS = PROJECT / "_build/original-assets/sprites/Lewis-1.png"
 OUTPUT = PROJECT / "assets/George_Standing.png"
-PREVIEW = PROJECT / "_build/imagegen/George_Standing-v7-preview-8x.png"
+PREVIEW = PROJECT / "_build/imagegen/George_Standing-v8-preview-8x.png"
 
 # Lewis uses the game's native slim body and standard four-direction walking
 # cadence. Map his palette to George's existing green/blue/brown colors.
@@ -109,10 +109,12 @@ def round_side_back(image: Image.Image, direction: int) -> None:
             image.putpixel((pixel_x, pixel_y), color)
 
 
-def wrap_side_outline(image: Image.Image, direction: int) -> None:
-    """Move the rear dark line onto the outside edge of each side-view head."""
-    outline = (33, 33, 33, 255)
-    gray_fill = (100, 100, 100, 255)
+def shrink_and_clean_side_rear(image: Image.Image, direction: int) -> None:
+    """Shrink the side head by one pixel and remove black from its rear half."""
+    transparent = (0, 0, 0, 0)
+    gray_dark = (71, 71, 71, 255)
+    gray_fill = (119, 119, 119, 255)
+    skin_dark = (154, 97, 74, 255)
     skin_mid = (207, 141, 112, 255)
     dark_colors = {(33, 33, 33, 255), (71, 71, 71, 255)}
 
@@ -127,53 +129,71 @@ def wrap_side_outline(image: Image.Image, direction: int) -> None:
 
         if direction == 1:  # facing right: rear is on the left
             outside_x = min(occupied)
-            rear_pixels = range(outside_x + 1, 8)
+            image.putpixel((outside_x, pixel_y), transparent)
+            rear_pixels = range(0, 8)
         elif direction == 3:  # facing left: rear is on the right
             outside_x = max(occupied)
-            rear_pixels = range(8, outside_x)
+            image.putpixel((outside_x, pixel_y), transparent)
+            rear_pixels = range(8, image.width)
         else:
             return
 
-        # Remove the old dark stripe from inside the hair/head, then redraw one
-        # continuous outline on the outer silhouette. Lower rows use skin fill
-        # so the edge rounds naturally into George's jaw and the back of his head.
+        # Clear every pure-black/dark stripe inside the rear half. The new edge
+        # uses gray-hair or skin shadow, so it remains readable without looking
+        # like a black line embedded inside George's head.
         fill = gray_fill if pixel_y <= 7 else skin_mid
         for pixel_x in rear_pixels:
             if image.getpixel((pixel_x, pixel_y)) in dark_colors:
                 image.putpixel((pixel_x, pixel_y), fill)
-        image.putpixel((outside_x, pixel_y), outline)
+
+        occupied = [
+            pixel_x
+            for pixel_x in range(image.width)
+            if image.getpixel((pixel_x, pixel_y))[3] > 0
+        ]
+        if occupied:
+            rear_edge_x = min(occupied) if direction == 1 else max(occupied)
+            edge_color = gray_dark if pixel_y <= 7 else skin_dark
+            image.putpixel((rear_edge_x, pixel_y), edge_color)
 
 
 def soften_back_hair(image: Image.Image) -> None:
-    """Taper the lower rear hair from 12 to 8 pixels instead of a hard block."""
+    """Keep the back head ten pixels wide while retaining soft hair shading."""
     transparent = (0, 0, 0, 0)
     gray_dark = (71, 71, 71, 255)
     gray_mid = (119, 119, 119, 255)
     gray_light = (156, 156, 156, 255)
 
-    for pixel_y in (5, 6, 7):
+    # The old rear head reached twelve pixels at its widest point. Trim one
+    # pixel from each side, then keep the lower hair at the same ten-pixel width.
+    for pixel_y in range(3, 8):
         for pixel_x in range(image.width):
-            image.putpixel((pixel_x, pixel_y), transparent)
+            if pixel_y >= 5 or pixel_x < 3 or pixel_x > 12:
+                image.putpixel((pixel_x, pixel_y), transparent)
 
-    tapered_rows = {
-        5: (2, 13),
-        6: (3, 12),
-        7: (4, 11),
-    }
-    for pixel_y, (left, right) in tapered_rows.items():
+    for pixel_y in (5, 6, 7):
+        left, right = 3, 12
         for pixel_x in range(left, right + 1):
             distance_to_edge = min(pixel_x - left, right - pixel_x)
-            color = gray_dark if distance_to_edge == 0 else gray_mid if distance_to_edge <= 2 else gray_light
+            if distance_to_edge == 0:
+                color = gray_dark
+            elif pixel_y == 7:
+                color = gray_mid
+            elif pixel_y == 6 and distance_to_edge >= 2:
+                color = gray_light
+            else:
+                color = gray_mid if distance_to_edge <= 2 else gray_light
             image.putpixel((pixel_x, pixel_y), color)
 
 
 def make_back_skin() -> Image.Image:
-    """Create a tapered three-row skin-colored lower rear head."""
+    """Match the upper width, with only a one-pixel rounded bottom corner."""
     skin_dark = (154, 97, 74, 255)
     skin_mid = (207, 141, 112, 255)
     skin_light = (249, 187, 151, 255)
     image = Image.new("RGBA", (16, 3), (0, 0, 0, 0))
-    for pixel_y, (left, right) in enumerate(((4, 11), (5, 10), (6, 9))):
+    for pixel_y in range(3):
+        left, right = (4, 11) if pixel_y == 2 else (3, 12)
         for pixel_x in range(left, right + 1):
             distance_to_edge = min(pixel_x - left, right - pixel_x)
             color = skin_dark if distance_to_edge == 0 else skin_mid if distance_to_edge == 1 else skin_light
@@ -207,7 +227,7 @@ for direction in range(4):
                     head.putpixel((head_x, head_y), (0, 0, 0, 0))
         head = keep_largest_component(head)
         round_side_back(head, direction)
-        wrap_side_outline(head, direction)
+        shrink_and_clean_side_rear(head, direction)
         if direction == 2:
             soften_back_hair(head)
         frame.alpha_composite(head, (0, 5))
