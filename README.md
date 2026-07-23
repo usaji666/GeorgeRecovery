@@ -4,7 +4,7 @@
 
 内部 ID：`vicky.GeorgeRecovery`
 
-## v0.3.18 测试版功能
+## v0.3.19 测试版功能
 
 - 乔治和哈维同时达到 8 心后，在雨天 9:00—18:00 进入乔治家触发剧情。
 - 首段剧情使用真正的地图内过场：乔治与玩家面对面；前三段对话结束后，哈维直接在客厅门口出现，先向下一格、再向右三格，绕开玩家并停在两人下方，然后再开始对话。
@@ -47,7 +47,7 @@ cd GeorgeRecovery
 dotnet build
 ```
 
-构建成功后会生成 `bin/Debug/net6.0/GeorgeRecovery 0.3.18.zip`，但不会自动复制到游戏。确认要测试时，手动解压到游戏的 `Mods/GeorgeRecovery`。
+构建成功后会生成 `bin/Debug/net6.0/GeorgeRecovery 0.3.19.zip`，但不会自动复制到游戏。确认要测试时，手动解压到游戏的 `Mods/GeorgeRecovery`。
 
 ## 测试命令
 
