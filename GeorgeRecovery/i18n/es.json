@@ -1,0 +1,49 @@
+{
+  "command.status.description": "Muestra el estado actual de la misión de recuperación de George.",
+  "command.setstage.description": "Comando de prueba: establece la fase de la misión. Valores: notstarted, collecting, materials, declined, completed.",
+
+  "event.accepted.harvey-knew": "¡Sabía que podía contar contigo, @!$h",
+  "event.accepted.request": "Pon una pata de conejo en el refrigerador de arriba, en mi habitación.",
+
+  "dialogue.george.wed8": "Harvey dice que mi recuperación va muy bien.#$e#Ya puedo dar unos pasos despacio. La próxima vez tendré que enseñárselo a Alex.$h",
+  "dialogue.george.tue10": "Ejercito las piernas todos los días, tal como me enseñó Harvey.#$e#Sin prisas. Cada día estoy un poco mejor que el anterior.$h",
+  "dialogue.evelyn.fri": "Últimamente, George se levanta y se mueve un poco todos los días.#$e#Ver que sus pasos son cada vez más firmes me deja mucho más tranquila.$h",
+  "dialogue.evelyn.summer-tue": "El tiempo cálido ha animado mucho a George. Se esfuerza con su rehabilitación todos los días.#$e#Nos conocemos desde hace sesenta años. ¡Me doy cuenta de que ahora tiene mucha más confianza!$h",
+
+  "event.opening.george-rain": "Las piernas siempre me duelen muchísimo cuando llueve.$s",
+  "event.opening.george-rehab": "Harvey viene cada semana para ayudarme con la rehabilitación. Quizá algún día pueda volver a ponerme de pie.",
+  "event.opening.george-evelyn": "Evelyn ha tenido que cargar con demasiado. A veces odio no poder mantenerme en pie por mí mismo.$s",
+  "event.opening.harvey-condition": "La lesión de George es grave, pero todavía hay algo que podemos intentar.",
+  "event.opening.harvey-request": "@, ¿estarías dispuesto a ayudarme?",
+  "event.opening.question": "¿Aceptarás la petición de Harvey?",
+  "event.opening.answer-yes": "Sí.",
+  "event.opening.answer-no": "No.",
+  "event.opening.declined": "De acuerdo. Puedo continuar con el tratamiento de George por mi cuenta.$s",
+
+  "event.finale.george-doctor": "Hola, @. Harvey es un buen médico. Ha conseguido tratarme las piernas, aunque todavía no camino con mucha firmeza.$h",
+  "event.finale.george-thanks": "Y también tengo que darte las gracias. No me habría recuperado tan rápido sin tu ayuda.$h",
+  "event.finale.george-future": "Seguiré con la rehabilitación. Cuando esté preparado, me gustaría ir andando al pueblo por mí mismo.$h",
+
+  "menu.material-box": "Caja de suministros médicos de Harvey",
+  "item.rabbit-foot": "Pata de conejo",
+  "item.submitted-count": "{{item}} ×{{count}}",
+  "list.separator": ", ",
+  "materials.none": "No llevas ninguno de los materiales de tratamiento que se necesitan ahora.\n\n{{progress}}",
+  "materials.complete": "Cierras el refrigerador. ¡Ya se han reunido todos los suministros que necesita Harvey!\n\nVisita la casa de George entre las 9:00 y las 18:00 en un día sin festival.",
+  "materials.submitted": "Entregado: {{items}}.\n\n{{progress}}",
+  "materials.progress": "Progreso de los suministros médicos:\nPata de conejo: {{current}}/{{required}}",
+
+  "common.none": "ninguno",
+  "common.not-found": "no encontrado",
+  "log.save-loaded": "Estado de la misión cargado: {{stage}}; indicador de finalización: {{completed}}; hora actual: {{time}}.",
+  "log.completion-restored": "Se restauró el indicador de recuperación de George desde los datos guardados del mod.",
+  "log.completion-written": "El estado de recuperación de George se guardó inmediatamente.",
+  "log.schedule-loaded": "Se cargó el horario de recuperación de George: {{schedule}}",
+  "log.schedule-failed": "No se pudo cargar el horario de recuperación de George: {{schedule}}",
+  "log.fridge-found": "Se encontró la casilla de interacción del refrigerador en la habitación de Harvey: ({{x}}, {{y}}), Action={{action}}",
+  "log.fridge-not-found": "No se pudo encontrar automáticamente la casilla de interacción del refrigerador en la habitación de Harvey.",
+  "log.status": "Fase: {{stage}}; pata de conejo {{submitted}}/{{required}}; ubicación actual: {{location}}; casilla del refrigerador: {{fridge}}",
+  "log.load-save-first": "Carga primero una partida.",
+  "log.setstage-usage": "Uso: george_recovery_setstage <notstarted|collecting|materials|declined|completed>",
+  "log.stage-set": "La fase de prueba se estableció en {{stage}}."
+}

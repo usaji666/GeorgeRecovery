@@ -1,0 +1,49 @@
+{
+  "command.status.description": "显示“治疗乔治腿伤”任务的当前状态。",
+  "command.setstage.description": "测试用：设置任务阶段。可用值：notstarted、collecting、materials、declined、completed。",
+
+  "event.accepted.harvey-knew": "我就知道可以相信你，@！$h",
+  "event.accepted.request": "请将一个兔子的脚放到我的房间楼上的冰箱里。",
+
+  "dialogue.george.wed8": "哈维说我的康复进展很不错。#$e#我已经能慢慢走上几步了，下次要让亚历克斯看看。$h",
+  "dialogue.george.tue10": "我每天都会按哈维教的方法练习双腿。#$e#慢慢来，总会一天比一天更好。$h",
+  "dialogue.evelyn.fri": "乔治最近每天都会起来活动活动。#$e#看着他一步一步走得更稳，我心里也踏实多了。$h",
+  "dialogue.evelyn.summer-tue": "暖和的天气让乔治很有精神，他每天都认真做康复练习。#$e#我们认识六十年了，我看得出来，他现在比以前更有信心！$h",
+
+  "event.opening.george-rain": "每次下雨天我的腿都疼得厉害。$s",
+  "event.opening.george-rehab": "哈维每周都来帮我做康复训练，希望有朝一日我能站起来。",
+  "event.opening.george-evelyn": "艾芙琳承担了太多，我有时痛恨自己站不起来。$s",
+  "event.opening.harvey-condition": "乔治的腿伤很严重，不过不是一点办法没有。",
+  "event.opening.harvey-request": "@，你愿意帮我吗？",
+  "event.opening.question": "你是否愿意接受哈维的请求？",
+  "event.opening.answer-yes": "是。",
+  "event.opening.answer-no": "否。",
+  "event.opening.declined": "好吧，我自己帮乔治也不是不行。$s",
+
+  "event.finale.george-doctor": "嘿，@，哈维是个好医生，他成功治疗了我的腿伤，虽然走得还不利索。$h",
+  "event.finale.george-thanks": "也多亏了你，我的腿才能好得这么快。$h",
+  "event.finale.george-future": "我会继续做康复训练。等准备好以后，我想亲自走到镇上看看。$h",
+
+  "menu.material-box": "哈维的治疗材料箱",
+  "item.rabbit-foot": "兔子的脚",
+  "item.submitted-count": "{{item}} ×{{count}}",
+  "list.separator": "、",
+  "materials.none": "你身上没有当前需要的治疗材料。\n\n{{progress}}",
+  "materials.complete": "你关上冰箱。哈维需要的材料已经全部集齐！\n\n请在非节日的9:00—18:00前往乔治家。",
+  "materials.submitted": "已提交：{{items}}。\n\n{{progress}}",
+  "materials.progress": "治疗材料进度：\n兔子的脚：{{current}}/{{required}}",
+
+  "common.none": "无",
+  "common.not-found": "未找到",
+  "log.save-loaded": "读取任务状态：{{stage}}；完成标记：{{completed}}；当前时间：{{time}}。",
+  "log.completion-restored": "已从 Mod 任务数据恢复乔治康复完成标记。",
+  "log.completion-written": "乔治康复完成状态已立即写入。",
+  "log.schedule-loaded": "已为乔治载入康复日程：{{schedule}}",
+  "log.schedule-failed": "无法载入乔治的康复日程：{{schedule}}",
+  "log.fridge-found": "找到哈维房间冰箱交互格：({{x}}, {{y}})，Action={{action}}",
+  "log.fridge-not-found": "没有自动找到哈维房间的冰箱交互格。",
+  "log.status": "阶段：{{stage}}；兔子的脚 {{submitted}}/{{required}}；当前地点：{{location}}；冰箱格：{{fridge}}",
+  "log.load-save-first": "请先读取一个存档。",
+  "log.setstage-usage": "用法：george_recovery_setstage <notstarted|collecting|materials|declined|completed>",
+  "log.stage-set": "测试阶段已设置为 {{stage}}。"
+}

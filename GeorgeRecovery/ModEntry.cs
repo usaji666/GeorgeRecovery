@@ -31,7 +31,7 @@ public sealed class ModEntry : Mod
 
     private readonly Dictionary<string, MaterialRequirement> requirements = new()
     {
-        ["(O)446"] = new("兔子的脚", 1, data => data.RabbitFootSubmitted, (data, value) => data.RabbitFootSubmitted = value)
+        ["(O)446"] = new("item.rabbit-foot", 1, data => data.RabbitFootSubmitted, (data, value) => data.RabbitFootSubmitted = value)
     };
 
     private SaveData data = new();
@@ -56,14 +56,24 @@ public sealed class ModEntry : Mod
 
         helper.ConsoleCommands.Add(
             "george_recovery_status",
-            "显示治疗乔治腿伤任务的当前状态。",
+            this.T("command.status.description"),
             this.OnStatusCommand
         );
         helper.ConsoleCommands.Add(
             "george_recovery_setstage",
-            "测试用：设置任务阶段。可用值：notstarted、collecting、materials、declined、completed。",
+            this.T("command.setstage.description"),
             this.OnSetStageCommand
         );
+    }
+
+    private string T(string key)
+    {
+        return this.Helper.Translation.Get(key);
+    }
+
+    private string T(string key, object tokens)
+    {
+        return this.Helper.Translation.Get(key, tokens);
     }
 
     private void UseStardewCursor()
@@ -88,8 +98,8 @@ public sealed class ModEntry : Mod
                 IDictionary<string, string> events = asset.AsDictionary<string, string>().Data;
                 events[AcceptedBranchId] =
                     "emote Harvey 20/"
-                    + "speak Harvey \"我就知道！@。$h\"/"
-                    + "speak Harvey \"请将一个兔子的脚放到我的房间楼上的冰箱上。\"/"
+                    + $"speak Harvey \"{this.T("event.accepted.harvey-knew")}\"/"
+                    + $"speak Harvey \"{this.T("event.accepted.request")}\"/"
                     + $"mailReceived {AcceptedFlag}/end";
             });
             return;
@@ -123,8 +133,8 @@ public sealed class ModEntry : Mod
             e.Edit(asset =>
             {
                 IDictionary<string, string> dialogue = asset.AsDictionary<string, string>().Data;
-                dialogue["Wed8"] = "哈维说我的康复进展很不错。#$e#我已经能慢慢走上几步了，下次要让亚历克斯看看。$h";
-                dialogue["Tue10"] = "我每天都会按哈维教的方法练习双腿。#$e#慢慢来，总会一天比一天更好。$h";
+                dialogue["Wed8"] = this.T("dialogue.george.wed8");
+                dialogue["Tue10"] = this.T("dialogue.george.tue10");
             });
             return;
         }
@@ -136,8 +146,8 @@ public sealed class ModEntry : Mod
             e.Edit(asset =>
             {
                 IDictionary<string, string> dialogue = asset.AsDictionary<string, string>().Data;
-                dialogue["Fri"] = "乔治最近每天都会起来活动活动。#$e#看着他一步一步走得更稳，我心里也踏实多了。$h";
-                dialogue["summer_Tue"] = "暖和的天气让乔治很有精神，他每天都认真做康复练习。#$e#我们认识六十年了，我看得出来，他现在比以前更有信心！$h";
+                dialogue["Fri"] = this.T("dialogue.evelyn.fri");
+                dialogue["summer_Tue"] = this.T("dialogue.evelyn.summer-tue");
             });
         }
     }
@@ -156,7 +166,15 @@ public sealed class ModEntry : Mod
         this.lastRecoveryComplete = IsRecoveryComplete();
         this.InvalidateRecoveryDialogue();
         this.Monitor.Log(
-            $"读取任务状态：{this.data.Stage}；完成标记：{Game1.player.mailReceived.Contains(CompletedFlag)}；当前时间：{Game1.timeOfDay}。",
+            this.T(
+                "log.save-loaded",
+                new
+                {
+                    stage = this.data.Stage,
+                    completed = Game1.player.mailReceived.Contains(CompletedFlag),
+                    time = Game1.timeOfDay
+                }
+            ),
             LogLevel.Debug
         );
     }
@@ -214,7 +232,7 @@ public sealed class ModEntry : Mod
             && !Game1.player.mailReceived.Contains(CompletedFlag))
         {
             Game1.player.mailReceived.Add(CompletedFlag);
-            this.Monitor.Log("已从 Mod 任务数据恢复乔治康复完成标记。", LogLevel.Debug);
+            this.Monitor.Log(this.T("log.completion-restored"), LogLevel.Debug);
         }
     }
 
@@ -227,7 +245,7 @@ public sealed class ModEntry : Mod
 
         this.Helper.Data.WriteSaveData(SaveKey, this.data);
         this.InvalidateRecoveryDialogue();
-        this.Monitor.Log("乔治康复完成状态已立即写入。", LogLevel.Debug);
+        this.Monitor.Log(this.T("log.completion-written"), LogLevel.Debug);
     }
 
     private void InvalidateRecoveryDialogue()
@@ -278,9 +296,9 @@ public sealed class ModEntry : Mod
 
         string scheduleKey = this.GetRecoveryScheduleKey();
         if (george.TryLoadSchedule(scheduleKey))
-            this.Monitor.Log($"已为乔治载入康复日程：{scheduleKey}", LogLevel.Debug);
+            this.Monitor.Log(this.T("log.schedule-loaded", new { schedule = scheduleKey }), LogLevel.Debug);
         else
-            this.Monitor.Log($"无法载入乔治的康复日程：{scheduleKey}", LogLevel.Warn);
+            this.Monitor.Log(this.T("log.schedule-failed", new { schedule = scheduleKey }), LogLevel.Warn);
     }
 
     private string GetRecoveryScheduleKey()
@@ -377,20 +395,20 @@ public sealed class ModEntry : Mod
             "none/-1000 -1000/farmer 14 21 1 George 17 21 3/"
             + "skippable/viewport 16 21 true/pause 500/"
             + "move farmer 2 0 1/faceDirection George 3/pause 300/"
-            + "speak George \"每次下雨天我的腿都疼得厉害。$s\"/"
-            + "speak George \"哈维每周都来帮我做康复训练，希望有朝一日我能站起来。\"/"
-            + "speak George \"艾芙琳承担了太多，我有时痛恨自己站不起来。$s\"/"
+            + $"speak George \"{this.T("event.opening.george-rain")}\"/"
+            + $"speak George \"{this.T("event.opening.george-rehab")}\"/"
+            + $"speak George \"{this.T("event.opening.george-evelyn")}\"/"
             + "pause 1000/"
             + "addTemporaryActor Harvey 16 32 13 21 1 true Character Harvey/playSound doorClose/"
             + "ignoreCollisions Harvey/"
             + "advancedMove Harvey false 0 1 3 0/proceedPosition Harvey/stopAdvancedMoves/"
             + "faceDirection Harvey 0/faceDirection farmer 1/faceDirection George 3/pause 300/"
-            + "speak Harvey \"乔治的腿伤很严重，不过不是一点办法没有。\"/"
-            + "speak Harvey \"@，你愿意帮我吗？\"/"
-            + "question fork0 \"你是否愿意接受哈维的请求？#是。#否。\"/"
+            + $"speak Harvey \"{this.T("event.opening.harvey-condition")}\"/"
+            + $"speak Harvey \"{this.T("event.opening.harvey-request")}\"/"
+            + $"question fork0 \"{this.T("event.opening.question")}#{this.T("event.opening.answer-yes")}#{this.T("event.opening.answer-no")}\"/"
             + $"fork {AcceptedBranchId}/"
             + "friendship Harvey -50/friendship George -50/emote Harvey 12/"
-            + "speak Harvey \"好吧，我自己帮乔治也不是不行。$s\"/"
+            + $"speak Harvey \"{this.T("event.opening.declined")}\"/"
             + $"mailReceived {DeclinedFlag}/end";
 
         location.startEvent(new Event(script, Game1.player));
@@ -407,9 +425,9 @@ public sealed class ModEntry : Mod
             + "skippable/viewport 16 21 true/pause 500/"
             + "move farmer 2 0 1/faceDirection George 3/pause 300/"
             + "emote George 20/"
-            + "speak George \"嘿，@，哈维是个好医生，他成功治疗了我的腿伤，虽然走得还不利索。$h\"/"
-            + "speak George \"也多亏了你，我的腿才能好得这么快。$h\"/"
-            + "speak George \"我会继续做康复训练。等准备好以后，我想亲自走到镇上看看。$h\"/"
+            + $"speak George \"{this.T("event.finale.george-doctor")}\"/"
+            + $"speak George \"{this.T("event.finale.george-thanks")}\"/"
+            + $"speak George \"{this.T("event.finale.george-future")}\"/"
             + $"mailReceived {CompletedFlag}/end";
 
         location.startEvent(new Event(script, Game1.player));
@@ -471,7 +489,7 @@ public sealed class ModEntry : Mod
             showReceivingMenu: true,
             highlightFunction: IsRabbitFoot,
             behaviorOnItemSelectFunction: this.taskChest.grabItemFromInventory,
-            message: "哈维的治疗材料箱",
+            message: this.T("menu.material-box"),
             behaviorOnItemGrab: this.taskChest.grabItemFromChest,
             snapToBottom: false,
             canBeExitedWithKey: true,
@@ -527,7 +545,16 @@ public sealed class ModEntry : Mod
 
             RemoveItemsFromList(deposited, item => item.QualifiedItemId == qualifiedId, amount);
             requirement.SetSubmitted(this.data, requirement.GetSubmitted(this.data) + amount);
-            submitted.Add($"{requirement.DisplayName} ×{amount}");
+            submitted.Add(
+                this.T(
+                    "item.submitted-count",
+                    new
+                    {
+                        item = this.T(requirement.DisplayNameKey),
+                        count = amount
+                    }
+                )
+            );
         }
 
         foreach (Item item in deposited)
@@ -539,7 +566,9 @@ public sealed class ModEntry : Mod
 
         if (submitted.Count == 0)
         {
-            Game1.drawObjectDialogue("你身上没有当前需要的治疗材料。\n\n" + this.GetProgressText());
+            Game1.drawObjectDialogue(
+                this.T("materials.none", new { progress = this.GetProgressText() })
+            );
             return;
         }
 
@@ -547,17 +576,33 @@ public sealed class ModEntry : Mod
         {
             this.data.Stage = QuestStage.MaterialsComplete;
             this.Helper.Data.WriteSaveData(SaveKey, this.data);
-            Game1.drawObjectDialogue("你关上冰箱。哈维需要的材料已经全部集齐！\n\n在非节日的9:00—18:00去乔治家看看。");
+            Game1.drawObjectDialogue(this.T("materials.complete"));
             return;
         }
 
         this.Helper.Data.WriteSaveData(SaveKey, this.data);
-        Game1.drawObjectDialogue("已提交：" + string.Join("、", submitted) + "。\n\n" + this.GetProgressText());
+        Game1.drawObjectDialogue(
+            this.T(
+                "materials.submitted",
+                new
+                {
+                    items = string.Join(this.T("list.separator"), submitted),
+                    progress = this.GetProgressText()
+                }
+            )
+        );
     }
 
     private string GetProgressText()
     {
-        return $"治疗材料进度：\n兔子的脚：{this.data.RabbitFootSubmitted}/1";
+        return this.T(
+            "materials.progress",
+            new
+            {
+                current = this.data.RabbitFootSubmitted,
+                required = 1
+            }
+        );
     }
 
     private static void RemoveItemsFromList(List<Item> items, Func<Item, bool> predicate, int amount)
@@ -602,13 +647,24 @@ public sealed class ModEntry : Mod
                 string? action = location.doesTileHaveProperty(x, y, "Action", "Buildings");
                 if (IsRefrigeratorAction(action))
                 {
-                    this.Monitor.Log($"找到哈维房间冰箱交互格：({x}, {y})，Action={action}", LogLevel.Debug);
+                    this.Monitor.Log(
+                        this.T(
+                            "log.fridge-found",
+                            new
+                            {
+                                x,
+                                y,
+                                action = action ?? ""
+                            }
+                        ),
+                        LogLevel.Debug
+                    );
                     return new Point(x, y);
                 }
             }
         }
 
-        this.Monitor.Log("没有自动找到哈维房间的冰箱交互格。", LogLevel.Warn);
+        this.Monitor.Log(this.T("log.fridge-not-found"), LogLevel.Warn);
         return null;
     }
 
@@ -622,7 +678,17 @@ public sealed class ModEntry : Mod
     private void OnStatusCommand(string command, string[] args)
     {
         this.Monitor.Log(
-            $"阶段：{this.data.Stage}；兔子的脚 {this.data.RabbitFootSubmitted}/1；当前地点：{Game1.currentLocation?.NameOrUniqueName ?? "无"}；冰箱格：{this.refrigeratorTile?.ToString() ?? "未找到"}",
+            this.T(
+                "log.status",
+                new
+                {
+                    stage = this.data.Stage,
+                    submitted = this.data.RabbitFootSubmitted,
+                    required = 1,
+                    location = Game1.currentLocation?.NameOrUniqueName ?? this.T("common.none"),
+                    fridge = this.refrigeratorTile?.ToString() ?? this.T("common.not-found")
+                }
+            ),
             LogLevel.Info
         );
     }
@@ -631,7 +697,7 @@ public sealed class ModEntry : Mod
     {
         if (!Context.IsWorldReady)
         {
-            this.Monitor.Log("请先读取一个存档。", LogLevel.Warn);
+            this.Monitor.Log(this.T("log.load-save-first"), LogLevel.Warn);
             return;
         }
 
@@ -648,7 +714,7 @@ public sealed class ModEntry : Mod
 
         if (stage is null)
         {
-            this.Monitor.Log("用法：george_recovery_setstage <notstarted|collecting|materials|declined|completed>", LogLevel.Warn);
+            this.Monitor.Log(this.T("log.setstage-usage"), LogLevel.Warn);
             return;
         }
 
@@ -671,11 +737,11 @@ public sealed class ModEntry : Mod
 
         this.Helper.Data.WriteSaveData(SaveKey, this.data);
         this.InvalidateRecoveryDialogue();
-        this.Monitor.Log($"测试阶段已设置为 {stage.Value}。", LogLevel.Info);
+        this.Monitor.Log(this.T("log.stage-set", new { stage = stage.Value }), LogLevel.Info);
     }
 
     private sealed record MaterialRequirement(
-        string DisplayName,
+        string DisplayNameKey,
         int Required,
         Func<SaveData, int> GetSubmitted,
         Action<SaveData, int> SetSubmitted

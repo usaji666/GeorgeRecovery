@@ -1,8 +1,8 @@
 {
   "Name": "治疗乔治腿伤",
   "Author": "vicky",
-  "Version": "0.3.19",
-  "Description": "帮助哈维收集治疗材料，推进乔治的康复故事。",
+  "Version": "0.4.0",
+  "Description": "帮助哈维收集治疗材料，推进乔治的康复故事；支持中英日西四种语言。",
   "UniqueID": "vicky.GeorgeRecovery",
   "EntryDll": "GeorgeRecovery.dll",
   "MinimumApiVersion": "4.0.0",

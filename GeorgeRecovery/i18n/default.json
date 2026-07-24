@@ -1,0 +1,49 @@
+{
+  "command.status.description": "Show the current status of the George Recovery quest.",
+  "command.setstage.description": "Testing command: set the quest stage. Values: notstarted, collecting, materials, declined, completed.",
+
+  "event.accepted.harvey-knew": "I knew I could count on you, @!$h",
+  "event.accepted.request": "Please place one Rabbit's Foot in the refrigerator upstairs in my room.",
+
+  "dialogue.george.wed8": "Harvey says my recovery is going very well.#$e#I can already take a few slow steps. Next time, I'll have to show Alex.$h",
+  "dialogue.george.tue10": "I exercise my legs every day, just like Harvey taught me.#$e#Slow and steady. Each day is a little better than the last.$h",
+  "dialogue.evelyn.fri": "George has been getting up and moving around every day lately.#$e#Seeing him grow steadier with every step puts my mind at ease.$h",
+  "dialogue.evelyn.summer-tue": "The warm weather has put George in good spirits. He works hard on his rehabilitation every day.#$e#We've known each other for sixty years. I can tell he has more confidence now!$h",
+
+  "event.opening.george-rain": "My legs always hurt terribly when it rains.$s",
+  "event.opening.george-rehab": "Harvey comes by every week to help with my rehabilitation. Maybe one day I'll stand again.",
+  "event.opening.george-evelyn": "Evelyn has had to carry too much. Sometimes I hate that I can't stand on my own.$s",
+  "event.opening.harvey-condition": "George's leg injury is serious, but there may still be something we can do.",
+  "event.opening.harvey-request": "@, would you be willing to help me?",
+  "event.opening.question": "Will you accept Harvey's request?",
+  "event.opening.answer-yes": "Yes.",
+  "event.opening.answer-no": "No.",
+  "event.opening.declined": "All right. I can manage George's treatment on my own.$s",
+
+  "event.finale.george-doctor": "Hey, @. Harvey is a fine doctor. He managed to treat my legs, even if I'm still a little unsteady.$h",
+  "event.finale.george-thanks": "And I have you to thank, too. I wouldn't have recovered this quickly without your help.$h",
+  "event.finale.george-future": "I'll keep up with my rehabilitation. When I'm ready, I'd like to walk into town on my own.$h",
+
+  "menu.material-box": "Harvey's Treatment Supply Box",
+  "item.rabbit-foot": "Rabbit's Foot",
+  "item.submitted-count": "{{item}} ×{{count}}",
+  "list.separator": ", ",
+  "materials.none": "You don't have any of the treatment materials currently needed.\n\n{{progress}}",
+  "materials.complete": "You close the refrigerator. All of Harvey's treatment supplies have been collected!\n\nVisit George's house between 9:00 and 18:00 on a non-festival day.",
+  "materials.submitted": "Submitted: {{items}}.\n\n{{progress}}",
+  "materials.progress": "Treatment supply progress:\nRabbit's Foot: {{current}}/{{required}}",
+
+  "common.none": "none",
+  "common.not-found": "not found",
+  "log.save-loaded": "Quest state loaded: {{stage}}; completion flag: {{completed}}; current time: {{time}}.",
+  "log.completion-restored": "Restored George's recovery completion flag from the mod save data.",
+  "log.completion-written": "George's recovery completion state was saved immediately.",
+  "log.schedule-loaded": "Loaded George's recovery schedule: {{schedule}}",
+  "log.schedule-failed": "Could not load George's recovery schedule: {{schedule}}",
+  "log.fridge-found": "Found the refrigerator interaction tile in Harvey's room: ({{x}}, {{y}}), Action={{action}}",
+  "log.fridge-not-found": "Could not automatically find the refrigerator interaction tile in Harvey's room.",
+  "log.status": "Stage: {{stage}}; Rabbit's Foot {{submitted}}/{{required}}; current location: {{location}}; refrigerator tile: {{fridge}}",
+  "log.load-save-first": "Please load a save first.",
+  "log.setstage-usage": "Usage: george_recovery_setstage <notstarted|collecting|materials|declined|completed>",
+  "log.stage-set": "Test stage set to {{stage}}."
+}

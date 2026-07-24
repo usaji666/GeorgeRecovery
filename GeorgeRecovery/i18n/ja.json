@@ -1,0 +1,49 @@
+{
+  "command.status.description": "「ジョージの回復」クエストの現在の状態を表示します。",
+  "command.setstage.description": "テスト用：クエスト段階を設定します。値：notstarted、collecting、materials、declined、completed。",
+
+  "event.accepted.harvey-knew": "やっぱり頼りになるね、@！$h",
+  "event.accepted.request": "ウサギの足を1つ、僕の部屋の2階にある冷蔵庫へ入れてください。",
+
+  "dialogue.george.wed8": "ハーヴィーによれば、回復は順調らしい。#$e#もうゆっくりなら何歩か歩けるぞ。今度アレックスにも見せてやらんとな。$h",
+  "dialogue.george.tue10": "毎日、ハーヴィーに教わったとおりに足を動かしておる。#$e#焦らず少しずつだ。昨日より今日、今日より明日だな。$h",
+  "dialogue.evelyn.fri": "最近のジョージは、毎日立って体を動かしているのよ。#$e#一歩ずつ足取りがしっかりしていくのを見ると、私も安心するわ。$h",
+  "dialogue.evelyn.summer-tue": "暖かいお天気のおかげで、ジョージは元気いっぱいよ。毎日まじめにリハビリをしているの。#$e#知り合って六十年になるもの。前よりずっと自信がついたって、私には分かるわ！$h",
+
+  "event.opening.george-rain": "雨の日はいつも足がひどく痛むんだ。$s",
+  "event.opening.george-rehab": "ハーヴィーが毎週リハビリを手伝いに来てくれる。いつかまた立てるようになればいいんだが。",
+  "event.opening.george-evelyn": "エブリンには苦労をかけすぎた。自分の足で立てないことが嫌になる時もある。$s",
+  "event.opening.harvey-condition": "ジョージの足のけがは深刻です。でも、できることが何もないわけではありません。",
+  "event.opening.harvey-request": "@、僕を手伝ってくれませんか？",
+  "event.opening.question": "ハーヴィーの頼みを引き受けますか？",
+  "event.opening.answer-yes": "はい。",
+  "event.opening.answer-no": "いいえ。",
+  "event.opening.declined": "分かりました。僕一人でもジョージの治療は続けられます。$s",
+
+  "event.finale.george-doctor": "おお、@。ハーヴィーは腕のいい医者だ。まだ少しふらつくが、わしの足をここまで治してくれた。$h",
+  "event.finale.george-thanks": "もちろん、お前さんのおかげでもある。こんなに早く良くなれたのは、お前さんが手伝ってくれたからだ。$h",
+  "event.finale.george-future": "これからもリハビリを続けるぞ。準備ができたら、自分の足で町まで歩いてみたいもんだ。$h",
+
+  "menu.material-box": "ハーヴィーの治療材料箱",
+  "item.rabbit-foot": "ウサギの足",
+  "item.submitted-count": "{{item}} ×{{count}}",
+  "list.separator": "、",
+  "materials.none": "今必要な治療材料を持っていません。\n\n{{progress}}",
+  "materials.complete": "冷蔵庫を閉めた。ハーヴィーが必要としていた治療材料がすべてそろった！\n\nお祭りのない日の9:00～18:00にジョージの家へ行ってみよう。",
+  "materials.submitted": "納品したもの：{{items}}\n\n{{progress}}",
+  "materials.progress": "治療材料の進み具合：\nウサギの足：{{current}}/{{required}}",
+
+  "common.none": "なし",
+  "common.not-found": "未検出",
+  "log.save-loaded": "クエスト状態を読み込みました：{{stage}}；完了フラグ：{{completed}}；現在時刻：{{time}}。",
+  "log.completion-restored": "Modのセーブデータからジョージの回復完了フラグを復元しました。",
+  "log.completion-written": "ジョージの回復完了状態をすぐに保存しました。",
+  "log.schedule-loaded": "ジョージの回復後スケジュールを読み込みました：{{schedule}}",
+  "log.schedule-failed": "ジョージの回復後スケジュールを読み込めませんでした：{{schedule}}",
+  "log.fridge-found": "ハーヴィーの部屋で冷蔵庫の操作タイルを検出しました：({{x}}, {{y}})、Action={{action}}",
+  "log.fridge-not-found": "ハーヴィーの部屋で冷蔵庫の操作タイルを自動検出できませんでした。",
+  "log.status": "段階：{{stage}}；ウサギの足 {{submitted}}/{{required}}；現在地：{{location}}；冷蔵庫タイル：{{fridge}}",
+  "log.load-save-first": "先にセーブデータを読み込んでください。",
+  "log.setstage-usage": "使い方：george_recovery_setstage <notstarted|collecting|materials|declined|completed>",
+  "log.stage-set": "テスト段階を {{stage}} に設定しました。"
+}
